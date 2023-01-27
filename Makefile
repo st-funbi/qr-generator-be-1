@@ -15,3 +15,5 @@ applymigration:
 
 seeddb:
 	npx prisma db seed
+server:
+	yarn start:dev
