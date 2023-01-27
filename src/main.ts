@@ -12,7 +12,7 @@ async function bootstrap() {
     .setDescription('The API is a solution to an assessment')
     .setVersion('1.0')
     .build();
-
+  app.enableCors();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger/index', app, document);
   await app.listen(8080);
