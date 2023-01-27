@@ -35,10 +35,10 @@ export class MoviesController {
       );
     }
   }
-  @Get('/get-movies')
-  async getMovies(@Query('cipherText') cipherText: string) {
+  @Post('/get-movies')
+  async getMovies(@Body() getMovies: GetMovieDTO) {
     try {
-      const data = await this.qrservice.getMovies(cipherText);
+      const data = await this.qrservice.getMovies(getMovies.cipherText);
       return {
         message: 'movies',
         data,
