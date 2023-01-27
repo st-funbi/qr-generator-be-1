@@ -11,7 +11,7 @@ export class PrismaService
     super({
       datasources: {
         db: {
-          url: 'postgresql://user:password@localhost:5432/qr_gen_db?schema=public',
+          url: process.env.DATABASE_URL,
         },
       },
     });
