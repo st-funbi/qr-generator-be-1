@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  ImATeapotException,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Movie } from '@prisma/client';
 import { toDataURL } from 'qrcode';
 import SimpleCrypto from 'simple-crypto-js';
@@ -14,15 +9,12 @@ export class QrService {
   constructor(private readonly movieservice: MoviesService) {}
   private simpleCryptoInstance = new SimpleCrypto(process.env.CIPHER_SECRET);
 
-  async generateMovieQR() {
+  async generateMovieQR(hostUrl: string) {
     try {
       const randomMovie = await this.getRamdomMoviesID();
       let stringData: string = JSON.stringify(randomMovie);
       let encrypted: string = this.simpleCryptoInstance.encrypt(stringData);
-      console.log(encrypted);
-      let dataUrl: string = await toDataURL(
-        `http://localhost:8080/swagger/index?data=${encrypted}`,
-      );
+      let dataUrl: string = await toDataURL(`${hostUrl}?data=${encrypted}`);
       return dataUrl;
     } catch (error) {
       console.log(error);
@@ -35,8 +27,7 @@ export class QrService {
 
   private async getRamdomMoviesID(): Promise<number[]> {
     let moviesLength = (await this.movieservice.findAll()).length;
-    // ranDyRand(moviesLength, 1);
-    const randomID = this.ranDyRand(moviesLength, 1);
+    const randomID = this.uniqueRand(moviesLength, 1);
     return randomID;
   }
 
@@ -60,9 +51,9 @@ export class QrService {
     }
   }
 
-  private ranDyRand(max: number, min: number): number[] {
+  private uniqueRand(max: number, min: number): number[] {
     let arr: number[] = [];
-    for (let i: number = 0; i < max; i++) {
+    for (let i: number = 1; i < max; i++) {
       let x: number = Math.floor(Math.random() * max) + min;
       if (arr.includes(x) == true) {
         i = i - 1;

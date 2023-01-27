@@ -8,7 +8,9 @@ import {
   UsePipes,
   ValidationPipe,
   Post,
+  Query,
 } from '@nestjs/common';
+import { ApiParam } from '@nestjs/swagger';
 import { GetMovieDTO } from '../dto/getMovieDTO';
 import { QrService } from '../services/qrservice/qr.service';
 
@@ -20,11 +22,11 @@ export class ReponseDTO {
 export class MoviesController {
   constructor(private readonly qrservice: QrService) {}
   @Get('/qr-random')
-  async getRandomQr() {
+  async getRandomQr(@Query('hostUrl') hostUrl: string) {
     try {
       return {
         message: 'qr feteched',
-        data: await this.qrservice.generateMovieQR(),
+        data: await this.qrservice.generateMovieQR(hostUrl),
       };
     } catch (error) {
       throw new HttpException(
@@ -33,10 +35,10 @@ export class MoviesController {
       );
     }
   }
-  @Post('/get-movies')
-  async getMovies(@Body() movieDTO: GetMovieDTO) {
+  @Get('/get-movies')
+  async getMovies(@Query('cipherText') cipherText: string) {
     try {
-      const data = await this.qrservice.getMovies(movieDTO.cipherText);
+      const data = await this.qrservice.getMovies(cipherText);
       return {
         message: 'movies',
         data,
