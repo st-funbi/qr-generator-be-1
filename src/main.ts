@@ -12,7 +12,16 @@ async function bootstrap() {
     .setDescription('The API is a solution to an assessment')
     .setVersion('1.0')
     .build();
-  app.enableCors();
+
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'https://yoke-assessment-fe.onrender.com/',
+      'https://yoke-assessment-fe.onrender.com',
+    ],
+    methods: ['GET', 'POST'],
+  });
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger/index', app, document);
   await app.listen(8080);
